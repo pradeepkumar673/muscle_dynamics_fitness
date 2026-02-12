@@ -4,6 +4,13 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+
+console.log('🔍 __dirname:', __dirname);
+console.log('📁 .env path:', path.resolve(__dirname, '.env'));
+console.log('🔑 MONGO_URI:', process.env.MONGO_URI);
+console.log('🌍 NODE_ENV:', process.env.NODE_ENV);
 
 const exerciseRoutes = require('./routes/exercises');
 
