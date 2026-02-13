@@ -6,56 +6,27 @@
   :root {
     color-scheme: dark;
   }
-  
-  body {
-    @apply bg-gray-900 text-gray-100 antialiased;
-    font-feature-settings: 'ss01', 'ss02', 'cv01', 'cv02';
-  }
-  
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-800;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    @apply bg-red-600 rounded-full;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-red-700;
-  }
-}
 
-@layer components {
-  .glass-card {
-    @apply backdrop-blur-sm bg-white/5 border border-white/10;
+  body {
+    @apply bg-gray-950 text-gray-100 antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
-  
-  .btn-primary {
-    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg 
-           transition-all duration-200 transform hover:scale-105 active:scale-95 
-           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+
+  /* Custom scrollbar – subtle */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
-  
-  .btn-secondary {
-    @apply bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg 
-           transition-all duration-200 border border-gray-600;
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-900;
   }
-  
-  .card {
-    @apply bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-700 
-           hover:border-red-500/50 transition-all duration-300;
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-700 rounded;
   }
-  
-  .muscle-selected {
-    @apply fill-blue-500 stroke-blue-300 stroke-2;
-  }
-  
-  .muscle-default {
-    @apply fill-gray-700 stroke-gray-500 stroke-1 hover:fill-gray-600 hover:stroke-gray-400;
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-600;
   }
 }

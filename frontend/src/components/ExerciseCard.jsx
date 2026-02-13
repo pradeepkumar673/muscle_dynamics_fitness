@@ -1,222 +1,106 @@
-import { 
-  Trash2, 
-  ExternalLink, 
-  ChevronUp, 
-  ChevronDown,
-  Target,
-  Clock,
-  Dumbbell,
-  Zap,
-  Heart,
-  Award,
-  Flame
-} from 'lucide-react'
+import { ChevronDown, ChevronUp, ExternalLink, Trash2 } from 'lucide-react'
 
 const ExerciseCard = ({ exercise, index, onDelete, onClick, isExpanded, onToggleExpand }) => {
-  const getMuscleInitial = (muscle) => {
-    if (!muscle) return 'G'
-    const words = muscle.split(' ')
-    if (words.length > 1) {
-      return words[0][0] + words[1][0]
-    }
-    return muscle[0].toUpperCase()
-  }
-
-  const getPrimaryMuscle = () => {
-    if (exercise.primaryMuscles && exercise.primaryMuscles.length > 0) {
-      return exercise.primaryMuscles[0]
-    }
-    return 'general'
-  }
-
-  const getDifficultyColor = (level) => {
-    switch (level?.toLowerCase()) {
-      case 'beginner': return 'bg-green-500/20 text-green-400'
-      case 'intermediate': return 'bg-yellow-500/20 text-yellow-400'
-      case 'expert': return 'bg-red-500/20 text-red-400'
-      default: return 'bg-gray-700 text-gray-400'
-    }
-  }
-
-  const getEquipmentColor = (equipment) => {
-    const equipmentColors = {
-      'barbell': 'bg-blue-500/20 text-blue-400',
-      'dumbbell': 'bg-purple-500/20 text-purple-400',
-      'machine': 'bg-orange-500/20 text-orange-400',
-      'cable': 'bg-cyan-500/20 text-cyan-400',
-      'kettlebell': 'bg-red-500/20 text-red-400',
-      'body only': 'bg-green-500/20 text-green-400',
-      'bands': 'bg-pink-500/20 text-pink-400',
-    }
-    return equipmentColors[equipment] || 'bg-gray-700 text-gray-400'
-  }
-
-  const primaryMuscle = getPrimaryMuscle()
-  const muscleInitial = getMuscleInitial(primaryMuscle)
+  const primaryMuscle = exercise.primaryMuscles?.[0] || 'general'
+  const muscleInitial = primaryMuscle
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
 
   return (
-    <div className="card group hover:shadow-xl hover:shadow-red-500/5 transition-all duration-300">
-      {/* Card Header */}
-      <div className="flex items-start justify-between mb-4">
+    <div className="bg-gray-900 border border-gray-800 rounded-lg p-5 hover:border-gray-700 transition-colors">
+      {/* Header */}
+      <div className="flex items-start justify-between">
         <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-red-600 text-white font-bold">
+          <div className="w-8 h-8 rounded bg-red-600 flex items-center justify-center text-white font-bold text-sm">
             {index}
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white line-clamp-1">{exercise.name}</h3>
+            <h3 className="font-semibold text-white">{exercise.name}</h3>
             <div className="flex items-center space-x-2 mt-1">
-              <span className={`px-2 py-1 rounded-md text-xs font-medium ${getDifficultyColor(exercise.level)}`}>
-                {exercise.level || 'Beginner'}
+              <span className="text-xs px-2 py-0.5 bg-gray-800 rounded text-gray-300">
+                {exercise.level || 'beginner'}
               </span>
-              <span className={`px-2 py-1 rounded-md text-xs font-medium ${getEquipmentColor(exercise.equipment)}`}>
+              <span className="text-xs px-2 py-0.5 bg-gray-800 rounded text-gray-300">
                 {exercise.equipment}
               </span>
             </div>
           </div>
         </div>
-        
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={onToggleExpand}
-            className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            {isExpanded ? (
-              <ChevronUp className="w-4 h-4 text-gray-400" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            )}
-          </button>
-          
-          <button
-            onClick={() => onDelete(exercise._id)}
-            className="p-2 hover:bg-red-500/20 rounded-lg transition-colors group/delete"
-          >
-            <Trash2 className="w-4 h-4 text-gray-400 group-hover/delete:text-red-400" />
-          </button>
-        </div>
-      </div>
-
-      {/* Muscle Indicator */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-            <span className="text-blue-400 font-bold text-sm">{muscleInitial}</span>
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">Primary Muscle</p>
-            <p className="font-medium text-white capitalize">{primaryMuscle}</p>
-          </div>
-        </div>
-        
         <button
-          onClick={onClick}
-          className="text-sm text-red-400 hover:text-red-300 font-medium flex items-center space-x-1"
+          onClick={() => onDelete(exercise._id)}
+          className="p-1.5 hover:bg-gray-800 rounded transition-colors"
+          aria-label="Remove exercise"
         >
-          <span>View Details</span>
-          <ExternalLink className="w-3 h-3" />
+          <Trash2 size={16} className="text-gray-500 hover:text-red-400" />
         </button>
       </div>
 
-      {/* Tags */}
-      <div className="mb-4 flex flex-wrap gap-2">
-        {exercise.primaryMuscles?.slice(0, 3).map(muscle => (
-          <span key={muscle} className="px-2 py-1 bg-blue-900/30 text-blue-300 rounded-md text-xs">
-            {muscle}
-          </span>
-        ))}
-        {exercise.secondaryMuscles?.slice(0, 2).map(muscle => (
-          <span key={muscle} className="px-2 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
-            {muscle}
-          </span>
-        ))}
-        {exercise.category && (
-          <span className="px-2 py-1 bg-red-900/30 text-red-300 rounded-md text-xs">
-            {exercise.category}
-          </span>
-        )}
+      {/* Primary muscle indicator */}
+      <div className="mt-4 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="w-7 h-7 rounded bg-blue-500/20 flex items-center justify-center text-xs font-medium text-blue-400">
+            {muscleInitial}
+          </div>
+          <span className="text-sm text-gray-400 capitalize">{primaryMuscle}</span>
+        </div>
+        <button
+          onClick={onClick}
+          className="text-xs text-red-400 hover:text-red-300 flex items-center space-x-1"
+        >
+          <span>Details</span>
+          <ExternalLink size={12} />
+        </button>
       </div>
 
-      {/* Expanded Content */}
+      {/* Muscle tags – simplified */}
+      <div className="mt-3 flex flex-wrap gap-1">
+        {exercise.primaryMuscles?.slice(0, 2).map(muscle => (
+          <span key={muscle} className="px-2 py-0.5 bg-blue-900/40 text-blue-300 rounded text-xs">
+            {muscle}
+          </span>
+        ))}
+        {exercise.secondaryMuscles?.slice(0, 1).map(muscle => (
+          <span key={muscle} className="px-2 py-0.5 bg-gray-800 text-gray-400 rounded text-xs">
+            {muscle}
+          </span>
+        ))}
+      </div>
+
+      {/* Expand toggle */}
+      <button
+        onClick={onToggleExpand}
+        className="mt-4 w-full flex items-center justify-center space-x-1 py-2 text-xs text-gray-500 hover:text-gray-300 border-t border-gray-800 transition"
+      >
+        <span>{isExpanded ? 'Show less' : 'Show more'}</span>
+        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+      </button>
+
+      {/* Expanded content – simplified */}
       {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-gray-700 space-y-4 animate-fade-in">
-          {/* Instructions Preview */}
+        <div className="mt-4 pt-2 border-t border-gray-800 space-y-3 text-sm">
           {exercise.instructions && exercise.instructions.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-white mb-2 flex items-center space-x-2">
-                <Zap className="w-4 h-4 text-yellow-500" />
-                <span>Instructions</span>
-              </h4>
+              <h4 className="text-xs font-semibold text-gray-400 mb-2">Instructions</h4>
               <ol className="space-y-2">
-                {exercise.instructions.slice(0, 3).map((instruction, idx) => (
+                {exercise.instructions.slice(0, 2).map((inst, idx) => (
                   <li key={idx} className="flex items-start space-x-2">
-                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-red-600 text-white text-xs flex items-center justify-center">
+                    <span className="flex-shrink-0 w-4 h-4 rounded-full bg-red-600 text-white text-[10px] flex items-center justify-center">
                       {idx + 1}
                     </span>
-                    <span className="text-sm text-gray-300">{instruction}</span>
+                    <span className="text-gray-300 text-xs">{inst}</span>
                   </li>
                 ))}
-                {exercise.instructions.length > 3 && (
-                  <p className="text-sm text-gray-500 text-center">
-                    +{exercise.instructions.length - 3} more steps
-                  </p>
+                {exercise.instructions.length > 2 && (
+                  <p className="text-xs text-gray-500">+{exercise.instructions.length - 2} more steps</p>
                 )}
               </ol>
             </div>
           )}
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-2">
-            <div className="text-center p-2 bg-gray-800/50 rounded-lg">
-              <Target className="w-4 h-4 text-red-400 mx-auto mb-1" />
-              <p className="text-xs text-gray-400">Muscles</p>
-              <p className="font-bold text-white">
-                {(exercise.primaryMuscles?.length || 0) + (exercise.secondaryMuscles?.length || 0)}
-              </p>
-            </div>
-            
-            <div className="text-center p-2 bg-gray-800/50 rounded-lg">
-              <Clock className="w-4 h-4 text-blue-400 mx-auto mb-1" />
-              <p className="text-xs text-gray-400">Sets</p>
-              <p className="font-bold text-white">3-4</p>
-            </div>
-            
-            <div className="text-center p-2 bg-gray-800/50 rounded-lg">
-              <Flame className="w-4 h-4 text-orange-400 mx-auto mb-1" />
-              <p className="text-xs text-gray-400">Reps</p>
-              <p className="font-bold text-white">8-12</p>
-            </div>
-          </div>
         </div>
       )}
-
-      {/* Footer */}
-      <div className="mt-4 pt-4 border-t border-gray-700 flex items-center justify-between">
-        <button
-          onClick={onToggleExpand}
-          className="text-sm text-gray-400 hover:text-white flex items-center space-x-1"
-        >
-          {isExpanded ? (
-            <>
-              <span>Show Less</span>
-              <ChevronUp className="w-3 h-3" />
-            </>
-          ) : (
-            <>
-              <span>Show More</span>
-              <ChevronDown className="w-3 h-3" />
-            </>
-          )}
-        </button>
-        
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={onClick}
-            className="text-sm btn-primary py-1 px-3"
-          >
-            Start Exercise
-          </button>
-        </div>
-      </div>
     </div>
   )
 }

@@ -1,6 +1,19 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import axios from 'axios'
+import {
+  Home,
+  ChevronLeft,
+  ChevronRight,
+  Dumbbell,
+  User,
+  Zap,
+  RefreshCw,
+  Activity,
+  Link,
+  Circle
+} from 'lucide-react'
+
 import EquipmentSelector from './components/EquipmentSelector'
 import MuscleSelector from './components/MuscleSelector'
 import ExerciseList from './components/ExerciseList'
@@ -19,27 +32,28 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  // Equipment options – all icons are widely available in lucide-react
   const equipmentOptions = [
-    { id: 'barbell', name: 'Barbell', icon: '🏋️' },
-    { id: 'dumbbell', name: 'Dumbbells', icon: '💪' },
-    { id: 'machine', name: 'Machines', icon: '🏗️' },
-    { id: 'cable', name: 'Cable', icon: '⚙️' },
-    { id: 'kettlebell', name: 'Kettlebells', icon: '🏋️‍♂️' },
-    { id: 'body only', name: 'Body Weight', icon: '👤' },
-    { id: 'bands', name: 'Resistance Bands', icon: '🔄' },
-    { id: 'ez curl bar', name: 'EZ Curl Bar', icon: '🏋️‍♀️' },
+    { id: 'barbell', name: 'Barbell', icon: Dumbbell },
+    { id: 'dumbbell', name: 'Dumbbells', icon: Dumbbell },
+    { id: 'machine', name: 'Machines', icon: Activity },
+    { id: 'cable', name: 'Cable', icon: Link },
+    { id: 'kettlebell', name: 'Kettlebells', icon: RefreshCw },
+    { id: 'body only', name: 'Body Weight', icon: User },
+    { id: 'bands', name: 'Resistance Bands', icon: Zap },
+    { id: 'ez curl bar', name: 'EZ Curl Bar', icon: Dumbbell },
   ]
 
   const handleEquipmentSelect = (equipmentId) => {
-    setSelectedEquipment(prev => 
-      prev.includes(equipmentId) 
+    setSelectedEquipment(prev =>
+      prev.includes(equipmentId)
         ? prev.filter(id => id !== equipmentId)
         : [...prev, equipmentId]
     )
   }
 
   const handleMuscleSelect = (muscle) => {
-    setSelectedMuscles(prev => 
+    setSelectedMuscles(prev =>
       prev.includes(muscle)
         ? prev.filter(m => m !== muscle)
         : [...prev, muscle]
@@ -51,24 +65,19 @@ function App() {
       alert('Please select at least one equipment type')
       return
     }
-
     if (currentStep === 2 && selectedMuscles.length === 0) {
       alert('Please select at least one muscle group')
       return
     }
-
     if (currentStep === 3) {
       await generateWorkout()
       return
     }
-
     setCurrentStep(currentStep + 1)
   }
 
   const handlePrevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-    }
+    if (currentStep > 1) setCurrentStep(currentStep - 1)
   }
 
   const generateWorkout = async () => {
@@ -92,9 +101,7 @@ function App() {
   }
 
   const shuffleExercises = () => {
-    const shuffled = [...filteredExercises]
-      .sort(() => Math.random() - 0.5)
-    setFilteredExercises(shuffled)
+    setFilteredExercises(prev => [...prev].sort(() => Math.random() - 0.5))
   }
 
   const deleteExercise = (exerciseId) => {
@@ -147,45 +154,45 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-950">
-      <header className="sticky top-0 z-50 bg-gray-900 border-b border-gray-800">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">MD</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-white">Muscle Dynamics</h1>
-                <p className="text-sm text-gray-400">Workout Generator</p>
-              </div>
+    <div className="min-h-screen bg-gray-950 text-gray-100">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
+              <span className="text-white font-bold text-sm">MD</span>
             </div>
-            <button
-              onClick={resetWorkout}
-              className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition"
-            >
-              Reset 🏠
-            </button>
+            <div>
+              <h1 className="text-xl font-bold text-white">Muscle Dynamics</h1>
+              <p className="text-xs text-gray-400">Workout Generator</p>
+            </div>
           </div>
+          <button
+            onClick={resetWorkout}
+            className="flex items-center space-x-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-md text-sm transition"
+          >
+            <Home size={16} />
+            <span>Reset</span>
+          </button>
         </div>
       </header>
 
+      {/* Main content */}
       <main className="container mx-auto px-4 py-8">
         <ProgressBar currentStep={currentStep} totalSteps={3} />
-        
-        <div className="mt-8">
-          {renderStep()}
-        </div>
 
+        <div className="mt-8">{renderStep()}</div>
+
+        {/* Navigation buttons */}
         <div className="mt-12 flex justify-between">
           <button
             onClick={handlePrevStep}
             disabled={currentStep === 1}
-            className={`px-6 py-2 bg-gray-800 text-white rounded-lg ${currentStep === 1 ? 'opacity-50' : 'hover:bg-gray-700'}`}
+            className="flex items-center space-x-2 px-5 py-2 bg-gray-800 rounded-md disabled:opacity-40 hover:bg-gray-700 transition"
           >
-            ← Previous
+            <ChevronLeft size={18} />
+            <span>Previous</span>
           </button>
-          
           <button
             onClick={handleNextStep}
             disabled={
@@ -193,23 +200,30 @@ function App() {
               (currentStep === 2 && selectedMuscles.length === 0) ||
               (currentStep === 3 && isLoading)
             }
-            className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50"
+            className="flex items-center space-x-2 px-5 py-2 bg-red-600 hover:bg-red-700 rounded-md disabled:opacity-40 transition"
           >
-            {isLoading ? 'Loading...' : currentStep === 3 ? 'Generate Workout' : 'Continue →'}
+            <span>{isLoading ? 'Loading…' : currentStep === 3 ? 'Generate Workout' : 'Continue'}</span>
+            {!isLoading && <ChevronRight size={18} />}
           </button>
         </div>
 
+        {/* Selection summary (no emojis) */}
         {(selectedEquipment.length > 0 || selectedMuscles.length > 0) && (
-          <div className="mt-8 p-4 bg-gray-800/50 rounded-xl border border-gray-700">
-            <h3 className="text-lg font-semibold text-white mb-3">Your Selection:</h3>
+          <div className="mt-8 p-4 bg-gray-800/30 rounded-lg border border-gray-700">
+            <h3 className="text-sm font-medium text-gray-400 mb-2">Your selection</h3>
             <div className="flex flex-wrap gap-2">
-              {selectedEquipment.map(eq => (
-                <span key={eq} className="px-3 py-1 bg-gray-700 rounded-full text-sm">
-                  {equipmentOptions.find(e => e.id === eq)?.icon} {equipmentOptions.find(e => e.id === eq)?.name}
-                </span>
-              ))}
+              {selectedEquipment.map(eq => {
+                const option = equipmentOptions.find(e => e.id === eq)
+                const Icon = option?.icon
+                return (
+                  <span key={eq} className="inline-flex items-center space-x-1 px-3 py-1 bg-gray-700 rounded-md text-xs">
+                    {Icon && <Icon size={14} />}
+                    <span>{option?.name || eq}</span>
+                  </span>
+                )
+              })}
               {selectedMuscles.map(muscle => (
-                <span key={muscle} className="px-3 py-1 bg-blue-900/30 text-blue-300 rounded-full text-sm">
+                <span key={muscle} className="px-3 py-1 bg-blue-900/50 text-blue-200 rounded-md text-xs">
                   {muscle}
                 </span>
               ))}
@@ -218,6 +232,7 @@ function App() {
         )}
       </main>
 
+      {/* Exercise detail modal */}
       {isModalOpen && selectedExercise && (
         <ExerciseDetailModal
           exercise={selectedExercise}
@@ -226,9 +241,10 @@ function App() {
         />
       )}
 
-      <footer className="mt-16 border-t border-gray-800 py-8">
-        <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
-          <p>Made with ❤️ by Pradeep Kumar • Muscle Dynamics Fitness App</p>
+      {/* Footer */}
+      <footer className="mt-16 border-t border-gray-800 py-6">
+        <div className="container mx-auto px-4 text-center text-gray-500 text-xs">
+          Muscle Dynamics Fitness App
         </div>
       </footer>
     </div>
